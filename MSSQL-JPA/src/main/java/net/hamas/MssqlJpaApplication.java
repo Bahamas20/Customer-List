@@ -33,6 +33,7 @@ public class MssqlJpaApplication implements CommandLineRunner {
 			System.out.println("2. Add a customer");
 			System.out.println("3. View Customer by ID");
 			System.out.println("4. Delete Customer by ID");
+			System.out.println("5. Edit Customer details");
 			System.out.println("0. Exit");
 			
 			int choice = scanner.nextInt();
@@ -49,6 +50,9 @@ public class MssqlJpaApplication implements CommandLineRunner {
 					continue;
 				case 4:
 					deleteCustomer(scanner);
+					continue;
+				case 5:
+					editCustomer(scanner);
 					continue;
 				case 0:
 					System.out.println("Exiting the program...");
@@ -68,7 +72,7 @@ public class MssqlJpaApplication implements CommandLineRunner {
 	}
 	
 	private void deleteCustomer(Scanner scanner) {
-		System.out.println("Enter the ID of the customer to delete:");
+		System.out.println("Enter the ID of customer to delete:");
 		String id = scanner.next();
 		customerRepo.deleteById(Integer.parseInt(id));
 	}
@@ -93,12 +97,69 @@ public class MssqlJpaApplication implements CommandLineRunner {
 	}
 	
 	private void viewCustomer(Scanner scanner) {
-		System.out.println("Enter ID of customer:");
+		System.out.println("Enter ID of customer to view:");
 		String id = scanner.next();
 	
 		Optional<Customer> customer = customerRepo.findById(Integer.parseInt(id));
 		System.out.println(customer.get());
 
+	}
+	
+	private void editCustomer(Scanner scanner) {
+		System.out.println("Enter ID of customer to edit:");
+		String id = scanner.next();
+		
+		Customer editingCustomer = customerRepo.findById(Integer.parseInt(id)).get();
+		
+		System.out.println("Customer to edit details is given below");
+		System.out.println(editingCustomer);
+		
+		System.out.println("Indicate which field you would like to edit");
+		System.out.println("1.First Name");
+		System.out.println("2.Last Name");
+		System.out.println("3.Expenditure");
+		
+		int choice = scanner.nextInt();
+		
+		System.out.println("Indicate the new value:");
+		String value = scanner.next();
+		
+		switch(choice) {
+		
+		case 1:
+			editCustomerFirstname(editingCustomer,value);
+			break;
+		case 2:
+			editCustomerLastname(editingCustomer,value);
+			break;
+		case 3:
+			editCustomerExpenditure(editingCustomer,value);
+			break;
+		
+		
+		}
+		
+		System.out.println("Customer Details Succesfully Editted");
+		
+
+	}
+	
+	private void editCustomerFirstname(Customer editingCustomer,String value) {
+		editingCustomer.setFirstname(value);
+		customerRepo.save(editingCustomer);
+		
+	}
+	
+	private void editCustomerLastname(Customer editingCustomer,String value) {
+		editingCustomer.setLastname(value);
+		customerRepo.save(editingCustomer);
+
+		
+	}
+	private void editCustomerExpenditure(Customer editingCustomer,String value) {
+		editingCustomer.setExpenditure(Float.parseFloat(value));
+		customerRepo.save(editingCustomer);
+		 
 	}
 
 }
